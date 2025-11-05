@@ -131,6 +131,20 @@ def extract_skills(text: str) -> List[str]:
     return display if display else ["Communication", "Teamwork"]
 
 
+@app.get("/")
+def root() -> dict:
+    return {
+        "status": "ok",
+        "message": "AI Resume Scanner API",
+        "version": "1.0.0",
+        "endpoints": {
+            "health": "/health",
+            "predict": "/predict",
+            "chat": "/chat"
+        }
+    }
+
+
 @app.get("/health")
 def health() -> dict:
     return {"status": "ok"}
