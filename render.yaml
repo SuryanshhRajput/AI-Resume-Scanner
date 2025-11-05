@@ -1,0 +1,32 @@
+# Render.com deployment configuration
+# This is an alternative to Railway for backend hosting
+
+services:
+  # Backend Service
+  - type: web
+    name: ai-resume-scanner-backend
+    env: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false  # Set this manually in Render dashboard
+    healthCheckPath: /health
+    plan: free  # Free tier (spins down after inactivity)
+
+  # Frontend Service (Static Site)
+  - type: web
+    name: ai-resume-scanner-frontend
+    env: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_BACKEND_URL
+        value: https://ai-resume-scanner-backend.onrender.com  # Update with your actual backend URL
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    plan: free
+

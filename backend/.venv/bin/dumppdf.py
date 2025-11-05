@@ -1,4 +1,4 @@
-#!/Users/suryansh/Downloads/job-predict-gradient-main/backend/.venv/bin/python3
+#!/Users/suryanshsingh/Downloads/AI Resume Scanner/backend/.venv/bin/python3
 """Extract pdf structure in XML format"""
 import logging
 import os.path

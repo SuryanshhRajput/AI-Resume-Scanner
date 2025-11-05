@@ -1,4 +1,6 @@
-#!/Users/suryansh/Downloads/job-predict-gradient-main/backend/.venv/bin/python3
+#!/bin/sh
+'''exec' "/Users/suryanshsingh/Downloads/AI Resume Scanner/backend/.venv/bin/python3" "$0" "$@"
+' '''
 # -*- coding: utf-8 -*-
 import re
 import sys

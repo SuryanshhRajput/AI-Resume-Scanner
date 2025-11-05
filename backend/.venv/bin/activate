@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/Users/suryansh/Downloads/job-predict-gradient-main/backend/.venv"
+VIRTUAL_ENV="/Users/suryanshsingh/Downloads/AI Resume Scanner/backend/.venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

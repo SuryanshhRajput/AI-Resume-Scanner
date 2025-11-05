@@ -29,7 +29,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/Users/suryansh/Downloads/job-predict-gradient-main/backend/.venv"
+set -gx VIRTUAL_ENV "/Users/suryanshsingh/Downloads/AI Resume Scanner/backend/.venv"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH

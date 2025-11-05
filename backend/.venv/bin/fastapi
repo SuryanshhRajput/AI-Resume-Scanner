@@ -1,4 +1,6 @@
-#!/Users/suryansh/Downloads/job-predict-gradient-main/backend/.venv/bin/python3
+#!/bin/sh
+'''exec' "/Users/suryanshsingh/Downloads/AI Resume Scanner/backend/.venv/bin/python3" "$0" "$@"
+' '''
 import sys
 from fastapi.cli import main
 if __name__ == '__main__':

@@ -59,7 +59,7 @@ const Upload = () => {
     setIsAnalyzing(true);
     
     try {
-      const apiBase = (import.meta as any).env?.VITE_BACKEND_URL || "http://127.0.0.1:8000";
+      const apiBase = import.meta.env.VITE_BACKEND_URL || "http://127.0.0.1:8000";
       const formData = new FormData();
       formData.append("file", file);
 

@@ -1,4 +1,4 @@
-#!/Users/suryansh/Downloads/job-predict-gradient-main/backend/.venv/bin/python3
+#!/Users/suryanshsingh/Downloads/AI Resume Scanner/backend/.venv/bin/python3
 """A command line tool for extracting text and images from PDF and
 output it to plain text, html, xml or tags."""
 import argparse
