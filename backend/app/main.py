@@ -70,18 +70,36 @@ def extract_text_from_pdf(file_bytes: bytes) -> str:
 JobCategory = Tuple[str, List[Tuple[str, float]]]  # (keyword, weight)
 
 CATEGORIES: List[JobCategory] = [
+    ("AI / Machine Learning Engineer", [
+        ("ai engineer", 4.0), ("artificial intelligence", 4.0), ("ai specialist", 3.5), ("ai developer", 3.5),
+        ("machine learning engineer", 4.0), ("ml engineer", 3.5), ("deep learning engineer", 3.5),
+        ("neural network", 3.0), ("computer vision", 3.0), ("cv", 2.5), ("nlp", 3.0), ("natural language processing", 3.0),
+        ("tensorflow", 3.0), ("pytorch", 3.0), ("keras", 2.5), ("transformer", 2.5), ("bert", 2.5), ("gpt", 2.5),
+        ("llm", 2.5), ("large language model", 2.5), ("generative ai", 3.0), ("genai", 2.5),
+        ("reinforcement learning", 2.5), ("openai", 2.0), ("hugging face", 2.0), ("model deployment", 2.5),
+        ("mlops", 2.5), ("model training", 2.5), ("feature engineering", 2.0)
+    ]),
     ("Data Science", [
-        ("machine learning", 3.0), ("data science", 3.0), ("data scientist", 2.5),
-        ("python", 2.0), ("pandas", 2.0), ("numpy", 2.0), ("tensorflow", 2.5), ("pytorch", 2.5),
-        ("statistics", 2.0), ("sql", 1.5), ("scikit-learn", 2.0), ("jupyter", 2.0),
-        ("data analysis", 2.0), ("data visualization", 2.0), ("neural network", 2.5),
-        ("deep learning", 2.5), ("nlp", 2.0), ("natural language processing", 2.0)
+        ("data science", 3.0), ("data scientist", 3.0), ("data analyst", 2.5),
+        ("python", 2.0), ("pandas", 2.5), ("numpy", 2.0), ("scikit-learn", 2.0), ("jupyter", 2.0),
+        ("statistics", 2.5), ("sql", 2.0), ("data analysis", 2.5), ("data visualization", 2.5),
+        ("machine learning", 1.5), ("statistical modeling", 2.5), ("hypothesis testing", 2.0),
+        ("tableau", 2.0), ("power bi", 2.0), ("excel", 1.5), ("data mining", 2.0)
+    ]),
+    ("Blockchain Developer", [
+        ("blockchain", 4.0), ("blockchain developer", 4.0), ("blockchain engineer", 4.0),
+        ("solidity", 3.5), ("smart contract", 3.5), ("web3", 3.0), ("defi", 3.0), ("decentralized finance", 3.0),
+        ("ethereum", 3.0), ("bitcoin", 2.5), ("cryptocurrency", 2.5), ("crypto", 2.0),
+        ("dapp", 2.5), ("decentralized application", 2.5), ("nft", 2.0), ("non-fungible token", 2.0),
+        ("truffle", 2.5), ("hardhat", 2.5), ("ganache", 2.0), ("metamask", 2.0),
+        ("ipfs", 2.5), ("consensus algorithm", 2.5), ("proof of stake", 2.0), ("proof of work", 2.0),
+        ("rust", 2.0), ("go", 1.5), ("javascript", 1.5)
     ]),
     ("Software Engineering", [
-        ("software engineer", 3.0), ("software developer", 3.0), ("full stack", 2.5),
+        ("software engineer", 3.0), ("software developer", 3.0), ("full stack", 2.5), ("backend developer", 2.5), ("frontend developer", 2.5),
         ("javascript", 2.0), ("typescript", 2.0), ("react", 2.0), ("node.js", 2.0), ("nodejs", 2.0),
         ("java", 2.0), ("spring", 2.0), ("c++", 1.5), ("c#", 1.5), (".net", 2.0),
-        ("go", 2.0), ("golang", 2.0), ("rust", 2.0), ("microservices", 2.0),
+        ("go", 2.0), ("golang", 2.0), ("rust", 1.5), ("microservices", 2.0),
         ("rest api", 1.5), ("graphql", 2.0), ("docker", 1.5), ("kubernetes", 1.5),
         ("git", 0.5), ("version control", 0.5), ("agile", 1.0), ("scrum", 1.0)
     ]),
@@ -94,11 +112,15 @@ CATEGORIES: List[JobCategory] = [
         ("monitoring", 2.0), ("prometheus", 2.0), ("grafana", 2.0)
     ]),
     ("Product Management", [
-        ("product manager", 3.0), ("product management", 3.0), ("product owner", 2.5),
-        ("roadmap", 2.5), ("stakeholder", 2.0), ("product strategy", 2.5),
-        ("metrics", 2.0), ("kpi", 2.0), ("user research", 2.5), ("user experience", 2.0),
-        ("backlog", 2.0), ("agile", 1.5), ("scrum", 1.5), ("kanban", 1.5),
-        ("mvp", 2.0), ("minimum viable product", 2.0), ("a/b testing", 2.0)
+        ("product manager", 4.0), ("product management", 4.0), ("product owner", 3.5), ("pm", 2.0),
+        ("product strategy", 3.5), ("product roadmap", 3.5), ("roadmap", 3.0), ("product vision", 3.0),
+        ("stakeholder management", 3.0), ("stakeholder", 2.5), ("cross-functional", 2.5),
+        ("metrics", 2.5), ("kpi", 2.5), ("okr", 2.0), ("key performance indicator", 2.0),
+        ("user research", 3.0), ("user experience", 2.5), ("customer discovery", 2.5),
+        ("backlog", 2.5), ("agile", 2.0), ("scrum", 2.0), ("kanban", 2.0),
+        ("mvp", 2.5), ("minimum viable product", 2.5), ("a/b testing", 2.5), ("product launch", 2.5),
+        ("gtm", 2.0), ("go-to-market", 2.0), ("product requirements", 2.5), ("prd", 2.0),
+        ("user stories", 2.0), ("prioritization", 2.5), ("feature specification", 2.0)
     ]),
     ("UI/UX Design", [
         ("ui designer", 3.0), ("ux designer", 3.0), ("user experience", 3.0), ("user interface", 3.0),
@@ -162,25 +184,55 @@ def predict_category(text: str) -> PredictionResponse:
     best_score = 0.0
     best_skills: List[str] = []
 
+    # Define required high-weight keywords for specific categories
+    # Category can only win if it has at least one high-weight keyword match
+    required_keywords = {
+        "AI / Machine Learning Engineer": ["ai engineer", "artificial intelligence", "ml engineer", "ai specialist", "ai developer"],
+        "Blockchain Developer": ["blockchain", "blockchain developer", "blockchain engineer", "solidity", "smart contract"],
+        "Product Management": ["product manager", "product management", "product owner", "product strategy"],
+    }
+
+    # Process categories in order (more specific first)
+    # This ensures AI Engineer is matched before Data Science, Blockchain before Software Engineering
     for category, keywords in CATEGORIES:
         score = 0.0
         matched: List[str] = []
+        has_required_keyword = False
+        
         for kw, weight in keywords:
             # Use word boundaries for better matching (avoid partial matches)
             # For multi-word phrases, use simple substring matching
+            matched_this = False
             if ' ' in kw:
                 # Multi-word phrase
                 if kw in text_lower:
                     score += weight
                     matched.append(kw)
+                    matched_this = True
             else:
                 # Single word - use word boundary regex
                 pattern = r'\b' + re.escape(kw) + r'\b'
                 if re.search(pattern, text_lower):
                     score += weight
                     matched.append(kw)
+                    matched_this = True
+            
+            # Check if this is a required keyword for this category
+            if matched_this and category in required_keywords:
+                if kw in required_keywords[category]:
+                    has_required_keyword = True
         
-        if score > best_score:
+        # For categories with required keywords, only consider if requirement is met
+        if category in required_keywords and not has_required_keyword:
+            continue  # Skip this category if required keyword not found
+        
+        # Only update if this score is significantly better (prevents ties)
+        if score > best_score + 0.5:  # Require at least 0.5 point difference
+            best_score = score
+            best_category = category
+            best_skills = matched
+        elif score > best_score and len(matched) > len(best_skills):
+            # If scores are close, prefer category with more matched keywords
             best_score = score
             best_category = category
             best_skills = matched
@@ -303,24 +355,42 @@ def _load_and_train_model() -> None:
         texts: List[str] = df["Resume"].astype(str).tolist()
         labels: List[str] = df["Category"].astype(str).str.strip().tolist()
 
-        # Normalize category names
+        # Normalize category names (map dataset categories to our categories)
         category_mapping = {
+            # Data Science
             "Data Science": "Data Science",
             "data science": "Data Science",
             "Data Scientist": "Data Science",
+            # AI/ML (may be in dataset as ML Engineer, AI Engineer, etc.)
+            "AI Engineer": "AI / Machine Learning Engineer",
+            "ai engineer": "AI / Machine Learning Engineer",
+            "Machine Learning Engineer": "AI / Machine Learning Engineer",
+            "ML Engineer": "AI / Machine Learning Engineer",
+            "Artificial Intelligence": "AI / Machine Learning Engineer",
+            "Deep Learning Engineer": "AI / Machine Learning Engineer",
+            # Software Engineering
             "Software Engineering": "Software Engineering",
             "software engineering": "Software Engineering",
             "Software Developer": "Software Engineering",
+            # Blockchain (may not be in dataset, will use keyword fallback)
+            "Blockchain Developer": "Blockchain Developer",
+            "Blockchain Engineer": "Blockchain Developer",
+            # DevOps
             "DevOps": "DevOps / Cloud",
             "DevOps / Cloud": "DevOps / Cloud",
             "Cloud Engineer": "DevOps / Cloud",
+            # Product Management
             "Product Management": "Product Management",
             "Product Manager": "Product Management",
+            "Product Owner": "Product Management",
+            # UI/UX
             "UI/UX Design": "UI/UX Design",
             "UI Designer": "UI/UX Design",
             "UX Designer": "UI/UX Design",
+            # Data Engineering
             "Data Engineering": "Data Engineering",
             "Data Engineer": "Data Engineering",
+            # Cybersecurity
             "Cybersecurity": "Cybersecurity",
             "Security Engineer": "Cybersecurity",
         }
